@@ -1,69 +1,74 @@
 # 🤖 ROTBOTS — Content Machines
 
-**"Anatomy of a Content Machine"**
+**"Anatomy of a Content Machine"** — Workshop for LI-MA TDA 2026, Amsterdam
 
 AI video pipeline: Topic in → finished video out.
 
 ## 📓 Notebooks
 
-| # | Notebook | Description | Colab |
+| # | Notebook | What it does | Colab |
 |---|----------|-------------|-------|
+| 1 | Archive Scraper | Download & segment Internet Archive videos as found footage | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/01_Archive_Scraper.ipynb) |
 | 2 | Script Writer | Sources → Essay → Storyboard → T2V Prompts | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/02_Script_Writer.ipynb) |
+| 3 | Effects & Log | Assign FFmpeg effects per scene + view AI decision chain | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/03_Effects_and_Log.ipynb) |
 | 4 | The Voice | Text-to-Speech narration (Edge-TTS, free) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/04_The_Voice.ipynb) |
-| 5 | Video Generator | T2V Prompts → AI Video Clips + Found Footage | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/05_Generate.ipynb) |
-| 7 | Subtitles | TikTok-style word-by-word subtitles (Whisper) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/07_Subtitles.ipynb) |
-| 6 | Assemble | FFmpeg: Videos + Audio + Music + Subs + Credits → Final | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/06_Assemble.ipynb) |
+| 5 | Video Generator | T2V Prompts → AI Video Clips | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/05_Generate.ipynb) |
+| 7 | Subtitles | TikTok-style word-by-word subtitles (5 styles) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/07_Subtitles.ipynb) |
+| 6 | Assemble | FFmpeg: Videos + Effects + Audio + Music + Subs + Credits → Final | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/06_Assemble.ipynb) |
 
 ## 🔄 Pipeline
 
 ```
-02_Script_Writer  →  prompts.json + essay_script.json
-       ↓
-04_The_Voice      →  narration audio
-       ↓
-05_Generate       →  video clips
-       ↓
-07_Subtitles      →  subtitles.ass (optional)
-       ↓
-06_Assemble       →  final_video.mp4
-                     (+ optional music, subtitles, credits)
+01_Archive_Scraper  →  archive clips (optional found footage)
+        ↓
+02_Script_Writer    →  prompts.json + essay_script.json
+        ↓
+03_Effects_and_Log  →  effects assigned + chain_report.html
+        ↓
+04_The_Voice        →  narration audio
+        ↓
+05_Generate         →  AI video clips (+ optional archive footage)
+        ↓
+07_Subtitles        →  subtitles.ass (optional)
+        ↓
+06_Assemble         →  final_video.mp4
+                       (effects + narration + music + subs + credits)
 ```
 
-## 📂 Session System
+## 📂 Sessions
 
-Each run creates a named session folder on Google Drive:
+Each run creates a named folder on Google Drive (auto-named from topic):
 
 ```
 rotbots_workshop/
-├── ai-generated-art/         ← auto-named from topic
+├── ai-generated-art/
 │   ├── session_info.json
-│   ├── summaries.json
-│   ├── essay_script.json
-│   ├── prompts.json
-│   ├── subtitles.ass
-│   ├── videos/
-│   ├── audio/
+│   ├── summaries.json, essay_script.json, prompts.json
+│   ├── storyboard.json, archive_clips.json
+│   ├── subtitles.ass, chain_log.json, chain_report.html
+│   ├── videos/, audio/, archive_clips/
 │   └── final_video.mp4
 ├── climate-change/
-└── my-custom-name/
+└── my-custom-session/
 ```
 
-## 🎬 Assembly Options
-
-The Assembly notebook has toggles for all optional features:
+## 🎬 Assembly Toggles
 
 ```python
 ENABLE_NARRATION = True      # Voice-over
-ENABLE_MUSIC = False         # Background music (AI generate or upload)
-ENABLE_SUBTITLES = False     # TikTok-style word-by-word subs
-ENABLE_CREDITS = True        # Rolling credits with source attribution
+ENABLE_MUSIC = False         # AI-generated (fal.ai) or uploaded MP3
+ENABLE_SUBTITLES = False     # TikTok-style (5 styles, random mix)
+ENABLE_CREDITS = True        # Rolling credits with sources
+# Effects auto-detected from prompts.json (set in 03_Effects_and_Log)
 ```
+
+## 🎨 FFmpeg Effects (10 from original ROTBOTS)
+
+`film_grain` · `vhs_artifacts` · `celluloid_scratches` · `sepia_tone` · `bw_transition` · `color_grade_warm` · `color_grade_cool` · `vignette` · `flicker` · `desaturate`
 
 ## 🛠️ Requirements
 
 - Google Account (Colab + Drive)
 - **Groq API Key** (free): https://console.groq.com/keys
 - **fal.ai API Key** (video + optional music): https://fal.ai/dashboard/keys
-- Edge-TTS: free, no key
-- Whisper (subtitles): runs on Colab CPU, no key
-- FFmpeg: pre-installed on Colab
+- Edge-TTS, Whisper, FFmpeg, yt-dlp: all free, run on Colab
