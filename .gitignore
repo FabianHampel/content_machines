@@ -1,0 +1,7 @@
+.env
+__pycache__/
+*.pyc
+.DS_Store
+test_output/
+*.mp4
+docs/superpowers/
