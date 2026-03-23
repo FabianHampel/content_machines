@@ -4,7 +4,15 @@
 
 AI video pipeline: Topic in → finished video out.
 
-## 📓 Notebooks
+## 🚀 Quick Start — All-in-One Notebook
+
+Run the entire pipeline in a single notebook:
+
+[![Open Full Pipeline in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/ROTBOTS_Full_Pipeline.ipynb)
+
+## 📓 Individual Notebooks
+
+Or run each step separately:
 
 | # | Notebook | What it does | Colab |
 |---|----------|-------------|-------|
@@ -65,6 +73,16 @@ ENABLE_CREDITS = True        # Rolling credits with sources
 ## 🎨 FFmpeg Effects (10 from original ROTBOTS)
 
 `film_grain` · `vhs_artifacts` · `celluloid_scratches` · `sepia_tone` · `bw_transition` · `color_grade_warm` · `color_grade_cool` · `vignette` · `flicker` · `desaturate`
+
+## 🔧 Building the Combined Notebook
+
+The Full Pipeline notebook is auto-generated from the individual notebooks:
+
+```bash
+python build_combined.py   # generates notebooks/ROTBOTS_Full_Pipeline.ipynb
+```
+
+Run this after editing any individual notebook to keep the combined version in sync.
 
 ## 🛠️ Requirements
 
