@@ -119,46 +119,73 @@ def build():
     ]))
 
     # ── API Keys ──
-    cells.append(make_code_cell([
-        '# API KEYS\n',
-        "GROQ_API_KEY = ''   # Free: https://console.groq.com/keys\n",
-        "FAL_API_KEY = ''    # Video: https://fal.ai/dashboard/keys\n",
+    cells.append(make_md_cell([
+        '---\n',
+        '# >>> YOUR INPUT: API Keys\n',
         '\n',
-        "if GROQ_API_KEY: print('[OK] Groq')\n",
-        "else: print('[!] Paste GROQ_API_KEY above')\n",
-        "if FAL_API_KEY: os.environ['FAL_KEY']=FAL_API_KEY; print('[OK] fal.ai')\n",
-        "else: print('[!] Paste FAL_API_KEY above')\n",
+        'Paste your API keys below. Both are free to get.\n',
+        '\n',
+        '| Service | What for | Get it here |\n',
+        '|---------|----------|-------------|\n',
+        '| **Groq** | LLM (text generation) | https://console.groq.com/keys |\n',
+        '| **fal.ai** | Video generation | https://fal.ai/dashboard/keys |\n',
+    ]))
+    cells.append(make_code_cell([
+        '# =============================================\n',
+        '#   PASTE YOUR API KEYS HERE\n',
+        '# =============================================\n',
+        '\n',
+        "GROQ_API_KEY = ''   # <-- paste your Groq key here\n",
+        "FAL_API_KEY  = ''   # <-- paste your fal.ai key here\n",
+        '\n',
+        '# =============================================\n',
+        '\n',
+        "if GROQ_API_KEY: print('[OK] Groq API key set')\n",
+        "else: print('[!] GROQ_API_KEY is empty -- paste it above!')\n",
+        "if FAL_API_KEY: os.environ['FAL_KEY']=FAL_API_KEY; print('[OK] fal.ai API key set')\n",
+        "else: print('[!] FAL_API_KEY is empty -- paste it above!')\n",
     ]))
 
     # ── Bridging cells injected BEFORE specific notebook sections ──
+    # Each value is a LIST of cells (markdown + code)
     BRIDGING = {
-        '02_Script_Writer.ipynb': make_code_cell([
+        # 01_Video_Plan uses the section divider as its header (no extra bridging needed)
+        '02_Script_Writer.ipynb': [make_code_cell([
             '# BRIDGE: Script Writer needs these from Video Plan\n',
             "TARGET_VIDEO_LENGTH = TOTAL_VIDEO_LENGTH\n",
             "TOTAL_NARRATION_WORDS = int(CONTENT_LENGTH * 2.5)\n",
-        ]),
-        '04_Upload_Footage.ipynb': make_code_cell([
+        ])],
+        '03_Archive_Scraper.ipynb': [
+            make_md_cell([
+                '---\n',
+                '# >>> YOUR INPUT: Archive Sources (optional)\n',
+                '\n',
+                'Add archive.org URLs below if you set ARCHIVE_RATIO > 0.\n',
+                'Skip this if you only use AI-generated video.\n',
+            ]),
+        ],
+        '04_Upload_Footage.ipynb': [make_code_cell([
             '# BRIDGE: Upload needs these variables\n',
             "UPLOADS_DIR = SESSION_DIR / 'uploads'; UPLOADS_DIR.mkdir(exist_ok=True)\n",
             "needed = plan.get('num_upload_scenes', 0) if 'plan' in dir() else NUM_UPLOAD_SCENES\n",
             "upload_clips = []\n",
-        ]),
-        '06_The_Voice.ipynb': make_code_cell([
+        ])],
+        '06_The_Voice.ipynb': [make_code_cell([
             '# BRIDGE: Voice needs audio dir\n',
             "AUDIO_DIR = SESSION_DIR / 'audio'; AUDIO_DIR.mkdir(exist_ok=True)\n",
-        ]),
-        '07_Generate.ipynb': make_code_cell([
+        ])],
+        '07_Generate.ipynb': [make_code_cell([
             '# BRIDGE: Generate needs video dir + fal key\n',
             "VIDEOS_DIR = SESSION_DIR / 'videos'; VIDEOS_DIR.mkdir(exist_ok=True)\n",
             "if FAL_API_KEY and not os.environ.get('FAL_KEY'): os.environ['FAL_KEY'] = FAL_API_KEY\n",
-        ]),
-        '08_Subtitles.ipynb': make_code_cell([
+        ])],
+        '08_Subtitles.ipynb': [make_code_cell([
             '# BRIDGE: Subtitles -- skip if disabled\n',
             "AUDIO_DIR = SESSION_DIR / 'audio'\n",
             "if not ENABLE_SUBTITLES:\n",
             "    print('Subtitles disabled, skipping.')\n",
-        ]),
-        '09_Assemble.ipynb': make_code_cell([
+        ])],
+        '09_Assemble.ipynb': [make_code_cell([
             '# BRIDGE: Assemble needs all pipeline state\n',
             "VIDEOS_DIR = SESSION_DIR / 'videos'\n",
             "AUDIO_DIR = SESSION_DIR / 'audio'\n",
@@ -200,7 +227,7 @@ def build():
             "print(f'  Narration: {\"narration_full.mp3\" if has_narration_file else \"none\"}')\n",
             "print(f'  Subtitles: {\"yes\" if sub_file.exists() else \"no\"}')\n",
             "print(f'  Effects: {len(effects_map)}')\n",
-        ]),
+        ])],
     }
 
     # ── Process each notebook ──
@@ -213,14 +240,25 @@ def build():
         with open(nb_path) as f:
             notebook = json.load(f)
 
-        # Section divider
+        # Section divider (with input instructions for user-facing sections)
         num = nb_name.split('_')[0]
         title = nb_name.replace('.ipynb', '').replace('_', ' ').lstrip('0123456789 ')
-        cells.append(make_md_cell([f'\n---\n\n# == {num}: {title}\n']))
+        if nb_name == '01_Video_Plan.ipynb':
+            cells.append(make_md_cell([
+                '\n---\n\n',
+                f'# >>> YOUR INPUT: {title}\n',
+                '\n',
+                'Configure your video below. Change **TOPIC**, **SOURCES**, and settings.\n',
+                '\n',
+                '**SOURCES** can be: website URLs, PDF links, or raw text.\n',
+            ]))
+        else:
+            cells.append(make_md_cell([f'\n---\n\n# == {num}: {title}\n']))
 
-        # Inject bridging cell if needed
+        # Inject bridging cells if needed
         if nb_name in BRIDGING:
-            cells.append(BRIDGING[nb_name])
+            for bridging_cell in BRIDGING[nb_name]:
+                cells.append(bridging_cell)
 
         # Add cells (skip boilerplate)
         added = 0
