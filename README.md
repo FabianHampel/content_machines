@@ -4,89 +4,77 @@
 
 AI video pipeline: Topic in → finished video out.
 
-## 🚀 Quick Start — All-in-One Notebook
-
-Run the entire pipeline in a single notebook:
+## 🚀 Quick Start — All-in-One
 
 [![Open Full Pipeline in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/ROTBOTS_Full_Pipeline.ipynb)
 
 ## 📓 Individual Notebooks
 
-Or run each step separately:
-
 | # | Notebook | What it does | Colab |
 |---|----------|-------------|-------|
-| 1 | Archive Scraper | Download & segment Internet Archive videos as found footage | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/01_Archive_Scraper.ipynb) |
-| 2 | Script Writer | Sources → Essay → Storyboard → T2V Prompts | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/02_Script_Writer.ipynb) |
-| 3 | Effects & Log | Assign FFmpeg effects per scene + view AI decision chain | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/03_Effects_and_Log.ipynb) |
-| 4 | The Voice | Text-to-Speech narration (Edge-TTS, free) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/04_The_Voice.ipynb) |
-| 5 | Video Generator | T2V Prompts → AI Video Clips | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/05_Generate.ipynb) |
-| 7 | Subtitles | TikTok-style word-by-word subtitles (5 styles) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/07_Subtitles.ipynb) |
-| 6 | Assemble | FFmpeg: Videos + Effects + Audio + Music + Subs + Credits → Final | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/06_Assemble.ipynb) |
+| 01 | Video Plan | Configure length, content mix, features | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/01_Video_Plan.ipynb) |
+| 02 | Script Writer | Sources → Essay → Mixed Storyboard → T2V Prompts | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/02_Script_Writer.ipynb) |
+| 03 | Archive Scraper | Download & segment archive.org videos (optional) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/03_Archive_Scraper.ipynb) |
+| 04 | Upload Footage | Upload own video clips (optional) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/04_Upload_Footage.ipynb) |
+| 05 | Effects & Log | FFmpeg effects per scene + AI decision chain | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/05_Effects_and_Log.ipynb) |
+| 06 | The Voice | TTS narration for ALL scenes (free Edge-TTS) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/06_The_Voice.ipynb) |
+| 07 | AI Video | Generate AI video clips (fal.ai) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/07_Generate.ipynb) |
+| 08 | Subtitles | TikTok-style word-by-word (5 styles, optional) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/08_Subtitles.ipynb) |
+| 09 | Assemble | Interleave AI + archive + uploads → final video | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/09_Assemble.ipynb) |
 
 ## 🔄 Pipeline
 
 ```
-01_Archive_Scraper  →  archive clips (optional found footage)
+01_Video_Plan       →  video_plan.json (length, mix ratios, features)
         ↓
-02_Script_Writer    →  prompts.json + essay_script.json
+02_Script_Writer    →  essay + storyboard (interleaved scene types)
         ↓
-03_Effects_and_Log  →  effects assigned + chain_report.html
+03_Archive_Scraper  →  archive clips (if ARCHIVE_RATIO > 0)
+04_Upload_Footage   →  uploaded clips (if UPLOAD_RATIO > 0)
         ↓
-04_The_Voice        →  narration audio
+05_Effects_and_Log  →  FFmpeg effects + chain log
         ↓
-05_Generate         →  AI video clips (+ optional archive footage)
+06_The_Voice        →  narration for ALL scenes
         ↓
-07_Subtitles        →  subtitles.ass (optional)
+07_Generate         →  AI video clips (only ai_generated scenes)
         ↓
-06_Assemble         →  final_video.mp4
-                       (effects + narration + music + subs + credits)
+08_Subtitles        →  subtitles.ass (optional)
+        ↓
+09_Assemble         →  final_video.mp4
 ```
 
-## 📂 Sessions
-
-Each run creates a named folder on Google Drive (auto-named from topic):
-
-```
-rotbots_workshop/
-├── ai-generated-art/
-│   ├── session_info.json
-│   ├── summaries.json, essay_script.json, prompts.json
-│   ├── storyboard.json, archive_clips.json
-│   ├── subtitles.ass, chain_log.json, chain_report.html
-│   ├── videos/, audio/, archive_clips/
-│   └── final_video.mp4
-├── climate-change/
-└── my-custom-session/
-```
-
-## 🎬 Assembly Toggles
+## 🎬 Video Plan (01)
 
 ```python
-ENABLE_NARRATION = True      # Voice-over
-ENABLE_MUSIC = False         # AI-generated (fal.ai) or uploaded MP3
-ENABLE_SUBTITLES = False     # TikTok-style (5 styles, random mix)
-ENABLE_CREDITS = True        # Rolling credits with sources
-# Effects auto-detected from prompts.json (set in 03_Effects_and_Log)
+TOTAL_VIDEO_LENGTH = 60     # Total video in seconds
+ARCHIVE_RATIO = 0.3         # 30% archive.org footage
+UPLOAD_RATIO = 0.0          # 0% self-uploaded
+# Remainder = 70% AI-generated
+
+ENABLE_CREDITS = True
+ENABLE_SUBTITLES = False
+ENABLE_MUSIC = False
+ENABLE_EFFECTS = True
 ```
 
-## 🎨 FFmpeg Effects (10 from original ROTBOTS)
+Scene order is automatically interleaved:
+```
+🤖 → 🤖 → 🏛️ → 🤖 → 🤖 → 🏛️ → 🤖 → 🤖 → 🏛️ → 🤖
+```
+
+## 🎨 FFmpeg Effects
 
 `film_grain` · `vhs_artifacts` · `celluloid_scratches` · `sepia_tone` · `bw_transition` · `color_grade_warm` · `color_grade_cool` · `vignette` · `flicker` · `desaturate`
-
-## 🔧 Building the Combined Notebook
-
-The Full Pipeline notebook is auto-generated from the individual notebooks:
-
-```bash
-python build_combined.py   # generates notebooks/ROTBOTS_Full_Pipeline.ipynb
-```
-
-Run this after editing any individual notebook to keep the combined version in sync.
 
 ## 🛠️ Requirements
 
 - Google Account (Colab + Drive)
 - **Groq API Key** (free): https://console.groq.com/keys
-- **fal.ai API Key** (video + optional music): https://fal.ai/dashboard/keys
+- **fal.ai API Key** (video): https://fal.ai/dashboard/keys
 - Edge-TTS, Whisper, FFmpeg, yt-dlp: all free, run on Colab
+
+## 🔧 Build Combined Notebook
+
+```bash
+python build_combined.py   # generates ROTBOTS_Full_Pipeline.ipynb
+```
