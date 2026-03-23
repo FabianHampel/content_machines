@@ -27,8 +27,11 @@ SKIP_PATTERNS = [
     'session_info.json',
     'for i,s in enumerate(sessions)',
     'if not sessions',
-    "print('\u2705 Setup')",
-    "print('\u2705 Setup complete')",
+    "print('[OK] Setup')",
+    "print('[OK] Setup complete')",
+    'GROQ_API_KEY',
+    'FAL_API_KEY',
+    '!pip install',
 ]
 
 PIP_PACKAGES = 'requests beautifulsoup4 pymupdf edge-tts fal-client yt-dlp faster-whisper'
