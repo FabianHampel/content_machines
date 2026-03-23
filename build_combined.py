@@ -41,6 +41,8 @@ def should_skip(cell):
     # Skip drive mount / session select boilerplate
     for pat in SKIP_PATTERNS:
         if pat in src and len(src.strip().split('\n')) <= 8: return True
+    # Skip session-loading cells of any size (these reload plan/session from disk)
+    if 'sessions = sorted' in src and 'video_plan.json' in src: return True
     return False
 
 def build():
