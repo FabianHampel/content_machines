@@ -6,7 +6,9 @@ AI video pipeline: Topic in, finished video out.
 
 ## Quick Start
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/ROTBOTS_Full_Pipeline.ipynb)
+**Version 1** (Edge-TTS): [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/ROTBOTS_Full_Pipeline.ipynb)
+
+**Version 2** (F5-TTS): [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FabianHampel/content_machines/blob/main/notebooks/ROTBOTS_Pipeline_Version_2.ipynb)
 
 1. Open the notebook in Colab
 2. Paste your API keys (Groq + fal.ai)
